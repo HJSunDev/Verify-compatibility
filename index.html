@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备支持检查</title>
+</head>
+<body>
+    <h1>设备支持检查</h1>
+    <p id="supportInfo"></p>
+    <h2>可用设备列表：</h2>
+    <ul id="deviceList"></ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const supportInfo = document.getElementById('supportInfo');
+            const deviceList = document.getElementById('deviceList');
+
+            // 检查是否支持setSinkId
+            const audio = new Audio();
+            if (typeof audio.setSinkId === 'function') {
+                supportInfo.textContent = '此环境支持setSinkId方法。';
+            } else {
+                supportInfo.textContent = '此环境不支持setSinkId方法。';
+            }
+
+            // 获取并显示所有设备信息
+            navigator.mediaDevices.enumerateDevices()
+                .then(devices => {
+                    devices.forEach(device => {
+                        const item = document.createElement('li');
+                        item.textContent = `设备类型：${device.kind}, 设备名称：${device.label}, 设备ID：${device.deviceId}`;
+                        deviceList.appendChild(item);
+                    });
+                })
+                .catch(err => {
+                    console.error('获取设备列表失败:', err);
+                    deviceList.innerHTML = '<li>无法获取设备列表。</li>';
+                });
+        });
+    </script>
+</body>
+</html>
